@@ -1,13 +1,13 @@
 // ============================================
-// SCRIPT.JS - FINAL UI STABLE (NO ACAK)
+// SCRIPT.JS - FINAL STEP-BY-STEP STABLE
 // ============================================
 
 // ================= STATE =================
 let currentQuestion = 0;
-const TOTAL = 10;
-const answers = Array(TOTAL).fill(0);
-let sessionId = null;
-let startTime = null;
+const TOTAL_QUESTIONS = 10;
+let answers = Array(TOTAL_QUESTIONS).fill(0);
+let sessionId;
+let startTime;
 
 // ================= INIT =================
 document.addEventListener('DOMContentLoaded', () => {
@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     startTime = new Date();
 
-    initSurvey();
-    bindButtons();
+    buildSurvey();
+    bindNavigation();
     updateUI();
 });
 
-// ================= INIT SURVEY =================
-function initSurvey() {
+// ================= BUILD SURVEY =================
+function buildSurvey() {
     const questions = [
         "Orang tua saya memberikan dukungan penuh dalam kegiatan akademik saya.",
         "Orang tua saya memberikan kebebasan memilih jurusan.",
@@ -49,21 +49,22 @@ function initSurvey() {
     form.innerHTML = '';
 
     questions.forEach((q, i) => {
-        const qDiv = document.createElement('div');
-        qDiv.className = `question-container ${i === 0 ? 'active' : ''}`;
-        qDiv.id = `question-${i}`;
+        const qEl = document.createElement('div');
+        qEl.className = 'question-container';
+        if (i === 0) qEl.classList.add('active');
+        qEl.id = `question-${i}`;
 
-        let optHTML = '';
+        let optsHTML = '';
         options.forEach(opt => {
             const id = `q${i}_${opt.value}`;
-            optHTML += `
+            optsHTML += `
                 <div class="option-item">
                     <input
                         type="radio"
-                        class="option-input"
-                        name="q${i}"
                         id="${id}"
+                        name="q${i}"
                         value="${opt.value}"
+                        class="option-input"
                     >
                     <label for="${id}" class="option-label">
                         ${opt.text}
@@ -72,49 +73,45 @@ function initSurvey() {
             `;
         });
 
-        qDiv.innerHTML = `
+        qEl.innerHTML = `
             <div class="question-text">${q}</div>
-            <div class="options-container">${optHTML}</div>
+            <div class="options-container">${optsHTML}</div>
         `;
 
-        form.appendChild(qDiv);
+        form.appendChild(qEl);
     });
 
-    bindOptionEvents();
+    bindAnswerEvents();
 }
 
-// ================= OPTIONS =================
-function bindOptionEvents() {
-    document
-        .getElementById('surveyForm')
-        .addEventListener('change', e => {
-            if (!e.target.classList.contains('option-input')) return;
+// ================= ANSWER EVENTS =================
+function bindAnswerEvents() {
+    document.getElementById('surveyForm').addEventListener('change', e => {
+        if (!e.target.classList.contains('option-input')) return;
 
-            const qIndex = Number(e.target.name.replace('q', ''));
-            answers[qIndex] = Number(e.target.value);
+        const qIndex = parseInt(e.target.name.replace('q', ''), 10);
+        answers[qIndex] = parseInt(e.target.value, 10);
 
-            updateNavigationButtons();
-        });
+        updateNavigationButtons();
+    });
 }
 
 // ================= NAVIGATION =================
-function bindButtons() {
-    document.getElementById('prevBtn').onclick = () => move(-1);
-    document.getElementById('nextBtn').onclick = () => move(1);
-    document.getElementById('submitBtn').onclick = submitSurvey;
+function bindNavigation() {
+    prevBtn.onclick = () => changeQuestion(-1);
+    nextBtn.onclick = () => changeQuestion(1);
+    submitBtn.onclick = submitSurvey;
 }
 
-function move(step) {
+function changeQuestion(step) {
     if (step === 1 && answers[currentQuestion] === 0) return;
 
-    document
-        .getElementById(`question-${currentQuestion}`)
+    document.getElementById(`question-${currentQuestion}`)
         .classList.remove('active');
 
     currentQuestion += step;
 
-    document
-        .getElementById(`question-${currentQuestion}`)
+    document.getElementById(`question-${currentQuestion}`)
         .classList.add('active');
 
     updateUI();
@@ -122,37 +119,32 @@ function move(step) {
 
 // ================= UI =================
 function updateUI() {
-    document.querySelector('.progress-fill').style.width =
-        ((currentQuestion + 1) / TOTAL) * 100 + '%';
-
+    const percent = ((currentQuestion + 1) / TOTAL_QUESTIONS) * 100;
+    document.querySelector('.progress-fill').style.width = percent + '%';
     document.querySelector('.progress-text').innerText =
-        `Pertanyaan ${currentQuestion + 1} dari ${TOTAL}`;
+        `Pertanyaan ${currentQuestion + 1} dari ${TOTAL_QUESTIONS}`;
 
     updateNavigationButtons();
 }
 
 function updateNavigationButtons() {
-    const prev = document.getElementById('prevBtn');
-    const next = document.getElementById('nextBtn');
-    const submit = document.getElementById('submitBtn');
+    prevBtn.disabled = currentQuestion === 0;
+    nextBtn.disabled = answers[currentQuestion] === 0;
 
-    prev.disabled = currentQuestion === 0;
-    next.disabled = answers[currentQuestion] === 0;
-
-    if (currentQuestion === TOTAL - 1) {
-        next.style.display = 'none';
-        submit.style.display = 'flex';
-        submit.disabled = answers[currentQuestion] === 0;
+    if (currentQuestion === TOTAL_QUESTIONS - 1) {
+        nextBtn.style.display = 'none';
+        submitBtn.style.display = 'flex';
+        submitBtn.disabled = answers[currentQuestion] === 0;
     } else {
-        next.style.display = 'flex';
-        submit.style.display = 'none';
+        nextBtn.style.display = 'flex';
+        submitBtn.style.display = 'none';
     }
 }
 
 // ================= SUBMIT =================
 async function submitSurvey() {
     if (answers.includes(0)) {
-        alert('Mohon jawab semua pertanyaan.');
+        alert("Mohon jawab semua pertanyaan.");
         return;
     }
 
@@ -174,13 +166,12 @@ async function submitSurvey() {
 
 // ================= UTIL =================
 function showLoading(show) {
-    document.getElementById('loadingOverlay').style.display =
-        show ? 'flex' : 'none';
+    loadingOverlay.style.display = show ? 'flex' : 'none';
 }
 
 function showThankYouPage() {
     document.querySelector('.survey-form').style.display = 'none';
     document.querySelector('.progress-container').style.display = 'none';
     document.querySelector('.buttons-container').style.display = 'none';
-    document.getElementById('thankYouContainer').style.display = 'block';
+    thankYouContainer.style.display = 'block';
 }
