@@ -1,5 +1,5 @@
 // ============================================
-// SCRIPT.JS - FINAL FIX (ANTI LOADING)
+// SCRIPT.JS - FINAL FIX (ANTI LOADING + UI FIX)
 // ============================================
 
 // ================= STATE =================
@@ -52,19 +52,29 @@ function initWithLocalData() {
     questions.forEach((q, i) => {
         let optHTML = '';
         options.forEach(opt => {
-            // FIX: Tambahkan ID unik agar Label bisa nge-link ke Input
-            const optionId = `q${i}_val${opt.value}`; 
+            const optionId = `q${i}_val${opt.value}`;
             optHTML += `
             <div class="option-item">
-                <input type="radio" name="q${i}" value="${opt.value}" id="${optionId}" class="option-input">
-                <label for="${optionId}">${opt.text}</label>
+                <input 
+                    type="radio" 
+                    name="q${i}" 
+                    value="${opt.value}" 
+                    id="${optionId}" 
+                    class="option-input"
+                >
+                <label for="${optionId}" class="option-label">
+                    ${opt.text}
+                </label>
             </div>`;
         });
 
         const div = document.createElement('div');
         div.className = `question-container ${i === 0 ? 'active' : ''}`;
         div.id = `question-${i}`;
-        div.innerHTML = `<div class="question-text">${q}</div><div class="options-group">${optHTML}</div>`;
+        div.innerHTML = `
+            <div class="question-text">${q}</div>
+            <div class="options-container">${optHTML}</div>
+        `;
         surveyForm.appendChild(div);
     });
 
@@ -78,6 +88,17 @@ function setupOptionListeners() {
 
         const qIndex = parseInt(e.target.name.replace('q', ''));
         answers[qIndex] = parseInt(e.target.value);
+
+        // === UI FIX: aktifkan animasi selected ===
+        const container = e.target.closest('.options-container');
+        if (container) {
+            container.querySelectorAll('.option-label')
+                .forEach(lbl => lbl.classList.remove('selected'));
+
+            const label = e.target.nextElementSibling;
+            if (label) label.classList.add('selected');
+        }
+
         updateNavigationButtons();
     });
 }
@@ -108,20 +129,15 @@ function goToNextQuestion() {
 
 // ================= UI =================
 function updateUI() {
-    // 1. UPDATE GARIS PROGRESS (BAR BIRU)
     const progressPercent = ((currentQuestion + 1) / answers.length) * 100;
     const progressFill = document.querySelector('.progress-fill');
-    if (progressFill) {
-        progressFill.style.width = `${progressPercent}%`;
-    }
+    if (progressFill) progressFill.style.width = `${progressPercent}%`;
 
-    // 2. UPDATE TULISAN "Pertanyaan X dari 10"
     const progressText = document.querySelector('.progress-text');
     if (progressText) {
         progressText.innerText = `Pertanyaan ${currentQuestion + 1} dari ${answers.length}`;
     }
 
-    // 3. JALANKAN UPDATE TOMBOL
     updateNavigationButtons();
 }
 
@@ -132,24 +148,20 @@ function updateNavigationButtons() {
 
     if (!prev || !next || !submit) return;
 
-    // Tombol "Sebelumnya" mati kalau di pertanyaan pertama
     prev.disabled = currentQuestion === 0;
-    
-    // Tombol "Selanjutnya" mati kalau pertanyaan sekarang belum dijawab
     next.disabled = answers[currentQuestion] === 0;
 
-    // CEK: Jika sudah di pertanyaan terakhir (indeks 9)
     if (currentQuestion === answers.length - 1) {
-        next.style.display = 'none';      
-        submit.style.display = 'flex';    
-        submit.disabled = answers[currentQuestion] === 0; 
+        next.style.display = 'none';
+        submit.style.display = 'flex';
+        submit.disabled = answers[currentQuestion] === 0;
     } else {
         next.style.display = 'flex';
         submit.style.display = 'none';
     }
 }
 
-// ================= SUBMIT (FINAL FIX) =================
+// ================= SUBMIT =================
 function submitSurvey() {
     if (!answers.every(v => v !== 0)) {
         alert("Mohon jawab semua pertanyaan terlebih dahulu.");
@@ -161,15 +173,13 @@ function submitSurvey() {
     const surveyData = {
         sessionId,
         startTime: startTime.toISOString(),
-        answers: answers
+        answers
     };
 
-    // KIRIM DATA
     if (typeof submitSurveyData === 'function') {
         submitSurveyData(surveyData);
     }
 
-    // PAKSA UI LANJUT KE THANK YOU PAGE
     setTimeout(() => {
         showLoading(false);
         showThankYouPage();
@@ -183,7 +193,6 @@ function showLoading(show) {
 }
 
 function showThankYouPage() {
-    // Sembunyikan semua elemen survey
     const surveyForm = document.querySelector('.survey-form');
     const progressCont = document.querySelector('.progress-container');
     const buttonsCont = document.querySelector('.buttons-container');
@@ -193,8 +202,6 @@ function showThankYouPage() {
     if (progressCont) progressCont.style.display = 'none';
     if (buttonsCont) buttonsCont.style.display = 'none';
     if (thankYou) thankYou.style.display = 'block';
-    
+
     console.log("✅ Survey selesai, halaman terima kasih muncul.");
 }
-
-
