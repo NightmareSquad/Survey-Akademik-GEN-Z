@@ -99,51 +99,58 @@ h1 {
 }
 
 /* FIX: OPTIONS STYLES (Tombol Setuju/Tidak Setuju) */
-.options-container, .options-group {
+.options-group {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    margin-top: 15px;
 }
 
 .option-item {
     width: 100%;
+    position: relative;
 }
 
-/* Memastikan Radio Button Muncul */
+/* Sembunyikan bulatan radio asli agar tampilan bersih tapi tetap fungsional */
 .option-input {
-    display: inline-block !important; 
-    width: 18px;
-    height: 18px;
-    margin-right: 12px;
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
     cursor: pointer;
-    vertical-align: middle;
+    z-index: 2;
 }
 
-/* Styling Label sebagai Card yang bisa diklik */
+/* Styling Label sebagai Card Utama */
 .option-item label {
     display: block;
-    padding: 15px;
-    background-color: #f8f9ff;
+    padding: 16px 20px;
+    background-color: #ffffff;
     border: 2px solid #e0e6ff;
-    border-radius: 10px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     font-weight: 500;
+    color: #2c3e50;
+    text-align: center;
+    position: relative;
+    z-index: 1;
 }
 
 .option-item label:hover {
-    background-color: #edf1ff;
+    background-color: #f8faff;
     border-color: #4b6cb7;
 }
 
-/* Highlight saat Radio Button dipilih */
-.option-input:checked + span, 
-.option-input:checked ~ .option-text {
-    font-weight: bold;
-    color: #4b6cb7;
+/* EFEK KLIK: Saat dipilih, kotak berubah jadi Biru dan Teks jadi Putih */
+.option-input:checked + label {
+    background-color: #4b6cb7 !important;
+    color: #ffffff !important;
+    border-color: #182848 !important;
+    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.3);
 }
 
-/* Button Navigation */
+/* Button Navigation - Tetap di bawah */
 .buttons-container {
     display: flex;
     justify-content: space-between;
@@ -254,3 +261,4 @@ h1 {
     font-weight: 700;
     display: block;
 }
+
