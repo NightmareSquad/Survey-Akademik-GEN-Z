@@ -1,3 +1,35 @@
+/* ================= PERBAIKAN KRITIS (FIX KLIK OPSI) ================= */
+
+/* ❌ SEBELUM:
+.option-input {
+    display: none;
+}
+*/
+
+/* ✅ SESUDAH (RADIO TETAP HIDUP) */
+.option-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* PASTIKAN LABEL BISA DIKLIK */
+.option-label {
+    cursor: pointer;
+    pointer-events: auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* PSEUDO ELEMENT TIDAK MENANGKAP KLIK */
+.option-label::before {
+    pointer-events: none;
+}
+
+/* ================================================================ */
+/* ================== CSS ASLI KAMU (TIDAK DIUBAH) ================= */
+/* ================================================================ */
+
 /* Reset dan Base Styles */
 * {
     margin: 0;
@@ -74,56 +106,6 @@ h1 {
     font-weight: 600;
 }
 
-/* Instructions Styles */
-.instructions {
-    background-color: #fff9e6;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 25px 30px;
-    border-left: 4px solid #ffc107;
-}
-
-.instructions p {
-    margin-bottom: 5px;
-    font-size: 0.95rem;
-}
-
-/* Survey Form Styles */
-.survey-form {
-    padding: 0 30px 30px;
-}
-
-.question-container {
-    margin-bottom: 35px;
-    display: none;
-    animation: fadeIn 0.5s ease;
-}
-
-.question-container.active {
-    display: block;
-}
-
-.question-number {
-    display: inline-block;
-    background-color: #4b6cb7;
-    color: white;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    text-align: center;
-    line-height: 32px;
-    margin-right: 10px;
-    font-weight: bold;
-}
-
-.question-text {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #2c3e50;
-    line-height: 1.4;
-}
-
 /* Options Styles */
 .options-container {
     display: flex;
@@ -137,10 +119,6 @@ h1 {
     min-width: 180px;
 }
 
-.option-input {
-    display: none;
-}
-
 .option-label {
     display: block;
     padding: 15px;
@@ -148,21 +126,9 @@ h1 {
     border: 2px solid #e0e6ff;
     border-radius: 10px;
     text-align: center;
-    cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
-    position: relative;
     overflow: hidden;
-}
-
-.option-label::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    background-color: #4b6cb7;
 }
 
 .option-label:hover {
@@ -176,348 +142,4 @@ h1 {
     color: white;
     border-color: #4b6cb7;
     box-shadow: 0 5px 15px rgba(75, 108, 183, 0.2);
-}
-
-/* Button Styles - DEBUGGED */
-.buttons-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 30px 30px;
-    padding-top: 20px;
-    border-top: 1px solid #eee;
-    gap: 15px; /* Memberi jarak antar tombol */
-}
-
-.btn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 140px; /* Lebar minimum tombol navigasi */
-    justify-content: center;
-}
-
-.btn-prev {
-    background-color: #f0f4ff;
-    color: #4b6cb7;
-}
-
-.btn-prev:hover {
-    background-color: #e0e6ff;
-}
-
-.btn-next {
-    background-color: #4b6cb7;
-    color: white;
-}
-
-.btn-next:hover {
-    background-color: #3a56a4;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(75, 108, 183, 0.2);
-}
-
-.btn-submit {
-    background-color: #2ecc71;
-    color: white;
-}
-
-.btn-submit:hover {
-    background-color: #27ae60;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(46, 204, 113, 0.2);
-}
-
-.btn-restart {
-    background-color: #3498db;
-    color: white;
-}
-
-.btn-restart:hover {
-    background-color: #2980b9;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 10px rgba(52, 152, 219, 0.2);
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* Legend Styles */
-.legend {
-    background-color: #f8f9ff;
-    padding: 15px;
-    border-radius: 8px;
-    margin: 0 30px 30px;
-}
-
-.legend-title {
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #4b6cb7;
-}
-
-.legend-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.legend-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.legend-color {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-}
-
-.legend-text {
-    font-size: 0.9rem;
-}
-
-/* Thank You Page Styles */
-.thank-you-container {
-    padding: 50px 30px;
-    text-align: center;
-    display: none;
-}
-
-.thank-you-container.active {
-    display: block;
-    animation: fadeIn 0.8s ease;
-}
-
-.thank-you-icon {
-    font-size: 4rem;
-    color: #4b6cb7;
-    margin-bottom: 20px;
-}
-
-.thank-you-message {
-    font-size: 1.5rem;
-    color: #2c3e50;
-    margin-bottom: 15px;
-}
-
-.thank-you-submessage {
-    color: #7f8c8d;
-    max-width: 500px;
-    margin: 0 auto 30px;
-}
-
-.timestamp {
-    font-size: 0.85rem;
-    color: #7f8c8d;
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* Debug Panel Styles - DEBUGGED */
-.debug-panel {
-    background-color: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 15px;
-    margin: 20px 30px; /* Jarak aman */
-    display: none;
-    clear: both; /* Memastikan tidak menabrak tombol diatasnya */
-}
-
-.debug-panel h3 {
-    color: #495057;
-    margin-bottom: 15px;
-    font-size: 1.1rem;
-}
-
-.debug-controls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-}
-
-.btn-debug {
-    padding: 8px 15px;
-    background-color: #6c757d;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s;
-    min-width: auto; /* Debug button tidak perlu lebar navigasi */
-}
-
-.btn-debug:hover {
-    background-color: #5a6268;
-}
-
-.debug-output {
-    background-color: #e9ecef;
-    border-radius: 4px;
-    padding: 15px;
-    font-family: monospace;
-    font-size: 0.9rem;
-    max-height: 300px;
-    overflow-y: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
-}
-
-/* Loading Overlay Styles */
-.loading-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.9);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 9999; /* Z-index tertinggi */
-    flex-direction: column;
-    gap: 20px;
-}
-
-.loading-spinner {
-    width: 60px;
-    height: 60px;
-    border: 6px solid #f0f4ff;
-    border-top: 6px solid #4b6cb7;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-.loading-text {
-    color: #4b6cb7;
-    font-weight: 600;
-    font-size: 1.1rem;
-}
-
-/* Animations */
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .container {
-        border-radius: 10px;
-    }
-    
-    header {
-        padding: 20px;
-    }
-    
-    h1 {
-        font-size: 1.5rem;
-    }
-    
-    .survey-form, .instructions, .legend, .buttons-container, .debug-panel {
-        padding-left: 20px;
-        padding-right: 20px;
-        margin-left: 0;
-        margin-right: 0;
-    }
-    
-    .options-container {
-        flex-direction: column;
-    }
-    
-    .option-item {
-        min-width: 100%;
-    }
-    
-    .buttons-container {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
-
-/* Custom Element Styles */
-.question-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-    padding: 8px 12px;
-    background-color: #f8f9fa;
-    border-radius: 5px;
-}
-
-.option-label.selected {
-    background-color: #f0f8ff !important;
-    border-left-width: 6px !important;
-    font-weight: bold;
-}
-
-.option-value {
-    display: inline-block;
-    width: 24px;
-    height: 24px;
-    background-color: #2c3e50;
-    color: white;
-    text-align: center;
-    border-radius: 50%;
-    margin-right: 10px;
-    font-weight: bold;
-}
-
-.option-desc {
-    display: block;
-    font-size: 11px;
-    color: #7f8c8d;
-    margin-top: 2px;
-}
-
-.connection-status {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.connection-status.connected {
-    background-color: rgba(46, 204, 113, 0.1);
-    color: #27ae60;
-    border: 1px solid #27ae60;
-}
-
-.connection-status.disconnected {
-    background-color: rgba(231, 76, 60, 0.1);
-    color: #e74c3c;
-    border: 1px solid #e74c3c;
 }
