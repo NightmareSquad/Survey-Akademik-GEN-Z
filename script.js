@@ -107,10 +107,30 @@ function goToNextQuestion() {
 }
 
 // ================= UI =================
+function updateUI() {
+    // 1. UPDATE GARIS PROGRESS (BAR BIRU)
+    const progressPercent = ((currentQuestion + 1) / answers.length) * 100;
+    const progressFill = document.querySelector('.progress-fill');
+    if (progressFill) {
+        progressFill.style.width = `${progressPercent}%`;
+    }
+
+    // 2. UPDATE TULISAN "Pertanyaan X dari 10"
+    const progressText = document.querySelector('.progress-text');
+    if (progressText) {
+        progressText.innerText = `Pertanyaan ${currentQuestion + 1} dari ${answers.length}`;
+    }
+
+    // 3. JALANKAN UPDATE TOMBOL
+    updateNavigationButtons();
+}
+
 function updateNavigationButtons() {
     const prev = document.getElementById('prevBtn');
     const next = document.getElementById('nextBtn');
     const submit = document.getElementById('submitBtn');
+
+    if (!prev || !next || !submit) return;
 
     // Tombol "Sebelumnya" mati kalau di pertanyaan pertama
     prev.disabled = currentQuestion === 0;
@@ -120,13 +140,10 @@ function updateNavigationButtons() {
 
     // CEK: Jika sudah di pertanyaan terakhir (indeks 9)
     if (currentQuestion === answers.length - 1) {
-        next.style.display = 'none';      // Sembunyikan tombol "Selanjutnya"
-        submit.style.display = 'flex';    // PAKSA munculkan tombol "Kirim"
-        
-        // Tombol Kirim hanya bisa diklik kalau pertanyaan ke-10 sudah dijawab
+        next.style.display = 'none';      
+        submit.style.display = 'flex';    
         submit.disabled = answers[currentQuestion] === 0; 
     } else {
-        // Jika belum di pertanyaan terakhir
         next.style.display = 'flex';
         submit.style.display = 'none';
     }
@@ -134,22 +151,25 @@ function updateNavigationButtons() {
 
 // ================= SUBMIT (FINAL FIX) =================
 function submitSurvey() {
-    if (!answers.every(v => v !== 0)) return;
+    if (!answers.every(v => v !== 0)) {
+        alert("Mohon jawab semua pertanyaan terlebih dahulu.");
+        return;
+    }
 
     showLoading(true);
 
     const surveyData = {
         sessionId,
         startTime: startTime.toISOString(),
-        answers
+        answers: answers
     };
 
-    // 🔥 KIRIM DATA (TANPA NUNGGU)
+    // KIRIM DATA
     if (typeof submitSurveyData === 'function') {
         submitSurveyData(surveyData);
     }
 
-    // 🔥 PAKSA UI LANJUT
+    // PAKSA UI LANJUT KE THANK YOU PAGE
     setTimeout(() => {
         showLoading(false);
         showThankYouPage();
@@ -163,11 +183,18 @@ function showLoading(show) {
 }
 
 function showThankYouPage() {
-    document.querySelector('.survey-form').style.display = 'none';
-    document.querySelector('.progress-container').style.display = 'none';
-    document.querySelector('.buttons-container').style.display = 'none';
-    document.getElementById('thankYouContainer').style.display = 'block';
-}
+    // Sembunyikan semua elemen survey
+    const surveyForm = document.querySelector('.survey-form');
+    const progressCont = document.querySelector('.progress-container');
+    const buttonsCont = document.querySelector('.buttons-container');
+    const thankYou = document.getElementById('thankYouContainer');
 
+    if (surveyForm) surveyForm.style.display = 'none';
+    if (progressCont) progressCont.style.display = 'none';
+    if (buttonsCont) buttonsCont.style.display = 'none';
+    if (thankYou) thankYou.style.display = 'block';
+    
+    console.log("✅ Survey selesai, halaman terima kasih muncul.");
+}
 
 
