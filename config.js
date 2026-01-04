@@ -1,36 +1,32 @@
 // ============================================
-// KONFIGURASI SURVEY - JAVASCRIPT FILE (V4 FINAL)
+// KONFIGURASI SURVEY - JAVASCRIPT FILE (FINAL FIX)
 // ============================================
 
-/* 
- * FINAL FIX
+/*
+ * FINAL FIX – ANTI CORS
  * Revisi: 4 Januari 2026
- * Status: PRODUKSI - STABLE
+ * Status: PRODUKSI - STABIL
  */
 
-// URL Web App Google Apps Script - DEPLOY V5
-const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzHch3vYam_UwlRqhOWHLQV3UdXBVWGZlHJ0mks3l2BMEpUQtu0GNmVaTHCxyfh35Z/exec';
+// URL Web App Google Apps Script (DEPLOY TERBARU)
+const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFury01AsD9V6h2xf1B2Hgo4ZJ2DFn9Md2GJMloURzRaeYwrJ7nuylBnnRcM2SBjQ/exec';
 
-// Mode debug
+// Debug
 const DEBUG_MODE = true;
 
-// Versi aplikasi
-const APP_VERSION = '4.1';
+// Versi
+const APP_VERSION = '4.2';
 
 // ================= DATA SURVEY =================
 const SURVEY_DATA = {
   title: "Peran Pola Asuh Orang Tua dalam Memprediksi Motivasi Belajar Mahasiswa Gen Z Semester Awal",
-  description: "Survey ini bertujuan untuk mengumpulkan data mengenai hubungan antara pola asuh orang tua dan motivasi belajar mahasiswa Gen Z semester awal.",
-  estimatedTime: "3-5 menit",
-  totalQuestions: 10,
-  maxScorePerQuestion: 5,
-  maxTotalScore: 50
+  estimatedTime: "3–5 menit",
+  totalQuestions: 10
 };
 
 // ================= STORAGE =================
 const STORAGE_KEYS = {
-  SURVEY_HISTORY: 'survey_pola_asuh_history_v4',
-  LAST_SUBMISSION: 'survey_last_submission_v4',
+  SURVEY_HISTORY: 'survey_history_v4',
   APP_VERSION: 'survey_app_version'
 };
 
@@ -63,8 +59,7 @@ function validateSurveyData(data) {
   }
 
   for (let i = 0; i < data.answers.length; i++) {
-    const v = data.answers[i];
-    if (v < 1 || v > 5) {
+    if (data.answers[i] < 1 || data.answers[i] > 5) {
       return { valid: false, error: `Jawaban Q${i + 1} invalid` };
     }
   }
@@ -77,7 +72,6 @@ function prepareSubmissionData(rawData) {
   return {
     sessionId: rawData.sessionId || generateSessionId(),
     startTime: rawData.startTime || new Date().toISOString(),
-    endTime: new Date().toISOString(),
     duration: rawData.startTime
       ? Math.floor((Date.now() - new Date(rawData.startTime)) / 1000)
       : 0,
@@ -92,27 +86,33 @@ function prepareSubmissionData(rawData) {
   };
 }
 
-// ================= SUBMIT (FINAL FIX) =================
+// ================= SUBMIT (ANTI CORS - FINAL) =================
 async function submitSurveyData(surveyData) {
   if (!checkOnlineStatus()) {
-    return { success: false, message: 'Offline' };
+    alert('Tidak ada koneksi internet');
+    return;
   }
 
   const validation = validateSurveyData(surveyData);
-  if (!validation.valid) return validation;
+  if (!validation.valid) {
+    alert(validation.error);
+    return;
+  }
 
   const payload = prepareSubmissionData(surveyData);
 
   if (DEBUG_MODE) {
-    console.log('📤 Payload dikirim ke Apps Script:', payload);
+    console.log('📤 Payload dikirim:', payload);
   }
 
-  const response = await fetch(APP_SCRIPT_URL, {
+  // 🔥 KIRIM PAKAI FormData (PALING STABIL)
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(payload));
+
+  // ⛔ JANGAN await, JANGAN headers
+  fetch(APP_SCRIPT_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload)
+    body: formData
   });
 
   // Backup lokal
@@ -120,12 +120,11 @@ async function submitSurveyData(surveyData) {
     const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.SURVEY_HISTORY) || '[]');
     history.push({ payload, time: new Date().toISOString() });
     localStorage.setItem(STORAGE_KEYS.SURVEY_HISTORY, JSON.stringify(history));
-  } catch (_) {}
+  } catch (e) {}
 
-  return await response.json();
+  return { success: true };
 }
 
 // ================= INIT =================
-console.log('✅ config.js FINAL loaded', APP_VERSION);
+console.log('✅ config.js FINAL FIX loaded', APP_VERSION);
 localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_VERSION);
-
