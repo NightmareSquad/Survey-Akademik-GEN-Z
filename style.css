@@ -233,4 +233,75 @@ h1 {
     display: block;
 }
 
+/* Container Opsi agar tidak mepet ke pinggir (kepojokan) */
+.options-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px; 
+    padding: 10px 20px; /* Memberi ruang napas di kiri dan kanan */
+    margin-top: 20px;
+}
+
+.option-item {
+    width: 100%;
+    position: relative;
+}
+
+/* Sembunyikan radio button asli */
+.option-input {
+    position: absolute;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Style Kartu Opsi dengan Efek 3D dan Kedalaman */
+.option-item label {
+    display: block;
+    padding: 18px 24px;
+    background-color: #ffffff;
+    border: 1px solid #dce4ff;
+    border-radius: 14px; /* Sudut lebih lembut */
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    font-weight: 500;
+    color: #34495e;
+    text-align: center;
+    
+    /* Efek Bayangan 3D Lembut */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02), 0 1px 3px rgba(0, 0, 0, 0.05);
+    position: relative;
+    z-index: 1;
+}
+
+/* Efek saat Kursor di atas (Hover) */
+.option-item label:hover {
+    background-color: #f0f4ff;
+    border-color: #4b6cb7;
+    transform: translateY(-3px); /* Tombol sedikit mengangkat */
+    box-shadow: 0 10px 20px rgba(75, 108, 183, 0.1);
+}
+
+/* EFEK AKTIF (WARNA BIRU PREMIUM SAAT DIKLIK) */
+.option-input:checked + label {
+    background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%) !important;
+    color: #ffffff !important;
+    border-color: #182848 !important;
+    
+    /* Efek Bayangan saat terpilih agar terlihat menonjol */
+    box-shadow: 0 8px 15px rgba(75, 108, 183, 0.3);
+    transform: translateY(1px); /* Efek tombol tertekan ke bawah */
+}
+
+/* Tambahan: Styling teks pertanyaan agar lebih tegas */
+.question-text {
+    padding: 0 20px;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1a2a6c;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
 
