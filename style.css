@@ -225,3 +225,32 @@ h1 {
     .buttons-container { flex-direction: column; }
     .btn { width: 100%; }
 }
+/* Progress Bar Style - Sesuai Gambar */
+.progress-container {
+    padding: 25px 30px; /* Memberi ruang agar tidak mepet ke atas/bawah */
+    background-color: #ffffff; /* Latar belakang putih sesuai gambar */
+    text-align: center;
+}
+
+.progress-bar {
+    height: 8px;
+    background-color: #eef2ff; /* Warna dasar bar (biru sangat muda) */
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 90%; /* Agar tidak terlalu mentok ke pinggir */
+    margin: 0 auto 15px; /* Tengah secara horizontal */
+}
+
+.progress-fill {
+    height: 100%;
+    background-color: #4b6cb7; /* Warna progress (biru) */
+    width: 0%; /* Diatur oleh JS */
+    transition: width 0.4s ease-in-out;
+}
+
+.progress-text {
+    font-size: 1rem;
+    color: #4b6cb7;
+    font-weight: 700;
+    display: block;
+}
