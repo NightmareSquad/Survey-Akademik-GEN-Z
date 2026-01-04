@@ -52,17 +52,19 @@ function initWithLocalData() {
     questions.forEach((q, i) => {
         let optHTML = '';
         options.forEach(opt => {
+            // FIX: Tambahkan ID unik agar Label bisa nge-link ke Input
+            const optionId = `q${i}_val${opt.value}`; 
             optHTML += `
             <div class="option-item">
-                <input type="radio" name="q${i}" value="${opt.value}" class="option-input">
-                <label>${opt.text}</label>
+                <input type="radio" name="q${i}" value="${opt.value}" id="${optionId}" class="option-input">
+                <label for="${optionId}">${opt.text}</label>
             </div>`;
         });
 
         const div = document.createElement('div');
         div.className = `question-container ${i === 0 ? 'active' : ''}`;
         div.id = `question-${i}`;
-        div.innerHTML = `<div class="question-text">${q}</div>${optHTML}`;
+        div.innerHTML = `<div class="question-text">${q}</div><div class="options-group">${optHTML}</div>`;
         surveyForm.appendChild(div);
     });
 
@@ -166,5 +168,6 @@ function showThankYouPage() {
     document.querySelector('.buttons-container').style.display = 'none';
     document.getElementById('thankYouContainer').style.display = 'block';
 }
+
 
 
