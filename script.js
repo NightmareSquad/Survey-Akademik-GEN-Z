@@ -1,10 +1,11 @@
 // ============================================
-// SCRIPT.JS - FINAL STABLE (CONNECTED TO CONFIG.JS)
+// SCRIPT.JS - FINAL UI STABLE (NO ACAK)
 // ============================================
 
 // ================= STATE =================
 let currentQuestion = 0;
-let answers = Array(10).fill(0);
+const TOTAL = 10;
+const answers = Array(TOTAL).fill(0);
 let sessionId = null;
 let startTime = null;
 
@@ -17,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startTime = new Date();
 
     initSurvey();
-    setupButtons();
+    bindButtons();
     updateUI();
 });
 
@@ -52,20 +53,28 @@ function initSurvey() {
         qDiv.className = `question-container ${i === 0 ? 'active' : ''}`;
         qDiv.id = `question-${i}`;
 
-        let optionsHTML = '';
+        let optHTML = '';
         options.forEach(opt => {
             const id = `q${i}_${opt.value}`;
-            optionsHTML += `
+            optHTML += `
                 <div class="option-item">
-                    <input type="radio" id="${id}" name="q${i}" value="${opt.value}" class="option-input">
-                    <label for="${id}" class="option-label">${opt.text}</label>
+                    <input
+                        type="radio"
+                        class="option-input"
+                        name="q${i}"
+                        id="${id}"
+                        value="${opt.value}"
+                    >
+                    <label for="${id}" class="option-label">
+                        ${opt.text}
+                    </label>
                 </div>
             `;
         });
 
         qDiv.innerHTML = `
             <div class="question-text">${q}</div>
-            <div class="options-container">${optionsHTML}</div>
+            <div class="options-container">${optHTML}</div>
         `;
 
         form.appendChild(qDiv);
@@ -76,38 +85,37 @@ function initSurvey() {
 
 // ================= OPTIONS =================
 function bindOptionEvents() {
-    document.getElementById('surveyForm').addEventListener('click', e => {
-        if (!e.target.classList.contains('option-label')) return;
+    document
+        .getElementById('surveyForm')
+        .addEventListener('change', e => {
+            if (!e.target.classList.contains('option-input')) return;
 
-        const input = document.getElementById(e.target.getAttribute('for'));
-        input.checked = true;
+            const qIndex = Number(e.target.name.replace('q', ''));
+            answers[qIndex] = Number(e.target.value);
 
-        const qIndex = parseInt(input.name.replace('q', ''));
-        answers[qIndex] = parseInt(input.value);
-
-        const container = e.target.closest('.options-container');
-        container.querySelectorAll('.option-label')
-            .forEach(l => l.classList.remove('selected'));
-
-        e.target.classList.add('selected');
-
-        updateNavigationButtons();
-    });
+            updateNavigationButtons();
+        });
 }
 
 // ================= NAVIGATION =================
-function setupButtons() {
-    prevBtn.onclick = () => move(-1);
-    nextBtn.onclick = () => move(1);
-    submitBtn.onclick = submitSurvey;
+function bindButtons() {
+    document.getElementById('prevBtn').onclick = () => move(-1);
+    document.getElementById('nextBtn').onclick = () => move(1);
+    document.getElementById('submitBtn').onclick = submitSurvey;
 }
 
 function move(step) {
     if (step === 1 && answers[currentQuestion] === 0) return;
 
-    document.getElementById(`question-${currentQuestion}`).classList.remove('active');
+    document
+        .getElementById(`question-${currentQuestion}`)
+        .classList.remove('active');
+
     currentQuestion += step;
-    document.getElementById(`question-${currentQuestion}`).classList.add('active');
+
+    document
+        .getElementById(`question-${currentQuestion}`)
+        .classList.add('active');
 
     updateUI();
 }
@@ -115,45 +123,49 @@ function move(step) {
 // ================= UI =================
 function updateUI() {
     document.querySelector('.progress-fill').style.width =
-        ((currentQuestion + 1) / answers.length * 100) + '%';
+        ((currentQuestion + 1) / TOTAL) * 100 + '%';
 
     document.querySelector('.progress-text').innerText =
-        `Pertanyaan ${currentQuestion + 1} dari ${answers.length}`;
+        `Pertanyaan ${currentQuestion + 1} dari ${TOTAL}`;
 
     updateNavigationButtons();
 }
 
 function updateNavigationButtons() {
-    prevBtn.disabled = currentQuestion === 0;
-    nextBtn.disabled = answers[currentQuestion] === 0;
+    const prev = document.getElementById('prevBtn');
+    const next = document.getElementById('nextBtn');
+    const submit = document.getElementById('submitBtn');
 
-    if (currentQuestion === answers.length - 1) {
-        nextBtn.style.display = 'none';
-        submitBtn.style.display = 'flex';
+    prev.disabled = currentQuestion === 0;
+    next.disabled = answers[currentQuestion] === 0;
+
+    if (currentQuestion === TOTAL - 1) {
+        next.style.display = 'none';
+        submit.style.display = 'flex';
+        submit.disabled = answers[currentQuestion] === 0;
     } else {
-        nextBtn.style.display = 'flex';
-        submitBtn.style.display = 'none';
+        next.style.display = 'flex';
+        submit.style.display = 'none';
     }
 }
 
-// ================= SUBMIT (CONNECTED) =================
+// ================= SUBMIT =================
 async function submitSurvey() {
     if (answers.includes(0)) {
-        alert("Jawab semua pertanyaan dulu.");
+        alert('Mohon jawab semua pertanyaan.');
         return;
     }
 
     showLoading(true);
 
-    const surveyData = {
+    const payload = {
         sessionId,
         startTime: startTime.toISOString(),
         answers
     };
 
-    // 🔥 INI INTI FIX-NYA
     if (typeof submitSurveyData === 'function') {
-        await submitSurveyData(surveyData);
+        await submitSurveyData(payload);
     }
 
     showLoading(false);
@@ -162,12 +174,13 @@ async function submitSurvey() {
 
 // ================= UTIL =================
 function showLoading(show) {
-    loadingOverlay.style.display = show ? 'flex' : 'none';
+    document.getElementById('loadingOverlay').style.display =
+        show ? 'flex' : 'none';
 }
 
 function showThankYouPage() {
     document.querySelector('.survey-form').style.display = 'none';
     document.querySelector('.progress-container').style.display = 'none';
     document.querySelector('.buttons-container').style.display = 'none';
-    thankYouContainer.style.display = 'block';
+    document.getElementById('thankYouContainer').style.display = 'block';
 }
