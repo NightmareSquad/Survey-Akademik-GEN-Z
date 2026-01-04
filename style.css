@@ -205,3 +205,39 @@ h1 {
 .option-label:active {
     transform: scale(0.98);
 }
+
+/* ================= FORCE OPTION BUTTON STYLE ================= */
+
+/* pastikan label benar-benar kelihatan seperti button */
+.option-item label.option-label {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    padding: 16px !important;
+    background: #f8f9ff !important;
+    border: 2px solid #e0e6ff !important;
+    border-radius: 12px !important;
+    cursor: pointer !important;
+    transition: all 0.25s ease !important;
+}
+
+/* hover */
+.option-item label.option-label:hover {
+    background: #edf1ff !important;
+    transform: translateY(-3px) !important;
+    box-shadow: 0 8px 16px rgba(75,108,183,0.2) !important;
+}
+
+/* checked / aktif */
+.option-item input.option-input:checked + label.option-label {
+    background: linear-gradient(135deg, #4b6cb7, #182848) !important;
+    color: #ffffff !important;
+    border-color: #4b6cb7 !important;
+    transform: scale(1.04) !important;
+    box-shadow: 0 12px 22px rgba(24,40,72,0.45) !important;
+}
+
+/* efek tekan */
+.option-item label.option-label:active {
+    transform: scale(0.97) !important;
+}
