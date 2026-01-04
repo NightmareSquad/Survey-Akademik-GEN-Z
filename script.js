@@ -1,5 +1,5 @@
 // ============================================
-// SCRIPT.JS - FINAL STABLE (NO ACAK, NO LOADING)
+// SCRIPT.JS - FINAL FIX (STABLE + ANIMASI HIDUP)
 // ============================================
 
 // ================= STATE =================
@@ -54,8 +54,16 @@ function initSurvey() {
             const id = `q${i}_${opt.value}`;
             optionsHTML += `
                 <div class="option-item">
-                    <input type="radio" id="${id}" name="q${i}" value="${opt.value}" class="option-input">
-                    <label for="${id}" class="option-label">${opt.text}</label>
+                    <input
+                        type="radio"
+                        id="${id}"
+                        name="q${i}"
+                        value="${opt.value}"
+                        class="option-input"
+                    >
+                    <label for="${id}" class="option-label">
+                        ${opt.text}
+                    </label>
                 </div>
             `;
         });
@@ -73,21 +81,11 @@ function initSurvey() {
 
 // ================= OPTIONS =================
 function bindOptionEvents() {
-    document.getElementById('surveyForm').addEventListener('click', e => {
-        if (!e.target.classList.contains('option-label')) return;
+    document.getElementById('surveyForm').addEventListener('change', e => {
+        if (!e.target.classList.contains('option-input')) return;
 
-        const input = document.getElementById(e.target.getAttribute('for'));
-        input.checked = true;
-
-        const qIndex = parseInt(input.name.replace('q', ''));
-        answers[qIndex] = parseInt(input.value);
-
-        // RESET visual di soal ini saja
-        const container = e.target.closest('.options-container');
-        container.querySelectorAll('.option-label')
-            .forEach(l => l.classList.remove('selected'));
-
-        e.target.classList.add('selected');
+        const qIndex = parseInt(e.target.name.replace('q', ''));
+        answers[qIndex] = parseInt(e.target.value);
 
         updateNavigationButtons();
     });
@@ -142,6 +140,7 @@ function submitSurvey() {
     }
 
     showLoading(true);
+
     setTimeout(() => {
         showLoading(false);
         showThankYouPage();
