@@ -1,5 +1,5 @@
 // ============================================
-// SCRIPT.JS - FINAL FIX (STABLE + ANIMASI HIDUP)
+// SCRIPT.JS - FINAL STABLE (CONNECTED TO CONFIG.JS)
 // ============================================
 
 // ================= STATE =================
@@ -10,7 +10,10 @@ let startTime = null;
 
 // ================= INIT =================
 document.addEventListener('DOMContentLoaded', () => {
-    sessionId = 'sess_' + Date.now();
+    sessionId = typeof generateSessionId === 'function'
+        ? generateSessionId()
+        : 'sess_' + Date.now();
+
     startTime = new Date();
 
     initSurvey();
@@ -54,16 +57,8 @@ function initSurvey() {
             const id = `q${i}_${opt.value}`;
             optionsHTML += `
                 <div class="option-item">
-                    <input
-                        type="radio"
-                        id="${id}"
-                        name="q${i}"
-                        value="${opt.value}"
-                        class="option-input"
-                    >
-                    <label for="${id}" class="option-label">
-                        ${opt.text}
-                    </label>
+                    <input type="radio" id="${id}" name="q${i}" value="${opt.value}" class="option-input">
+                    <label for="${id}" class="option-label">${opt.text}</label>
                 </div>
             `;
         });
@@ -81,11 +76,20 @@ function initSurvey() {
 
 // ================= OPTIONS =================
 function bindOptionEvents() {
-    document.getElementById('surveyForm').addEventListener('change', e => {
-        if (!e.target.classList.contains('option-input')) return;
+    document.getElementById('surveyForm').addEventListener('click', e => {
+        if (!e.target.classList.contains('option-label')) return;
 
-        const qIndex = parseInt(e.target.name.replace('q', ''));
-        answers[qIndex] = parseInt(e.target.value);
+        const input = document.getElementById(e.target.getAttribute('for'));
+        input.checked = true;
+
+        const qIndex = parseInt(input.name.replace('q', ''));
+        answers[qIndex] = parseInt(input.value);
+
+        const container = e.target.closest('.options-container');
+        container.querySelectorAll('.option-label')
+            .forEach(l => l.classList.remove('selected'));
+
+        e.target.classList.add('selected');
 
         updateNavigationButtons();
     });
@@ -132,8 +136,8 @@ function updateNavigationButtons() {
     }
 }
 
-// ================= SUBMIT =================
-function submitSurvey() {
+// ================= SUBMIT (CONNECTED) =================
+async function submitSurvey() {
     if (answers.includes(0)) {
         alert("Jawab semua pertanyaan dulu.");
         return;
@@ -141,10 +145,19 @@ function submitSurvey() {
 
     showLoading(true);
 
-    setTimeout(() => {
-        showLoading(false);
-        showThankYouPage();
-    }, 700);
+    const surveyData = {
+        sessionId,
+        startTime: startTime.toISOString(),
+        answers
+    };
+
+    // 🔥 INI INTI FIX-NYA
+    if (typeof submitSurveyData === 'function') {
+        await submitSurveyData(surveyData);
+    }
+
+    showLoading(false);
+    showThankYouPage();
 }
 
 // ================= UTIL =================
