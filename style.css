@@ -98,12 +98,12 @@ h1 {
     display: block;
 }
 
-/* FIX: OPTIONS STYLES (Tombol Setuju/Tidak Setuju) */
+/* FIX: OPTIONS STYLES (Tampilan Profesional & 3D) */
 .options-group {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 15px;
+    gap: 15px; /* Jarak antar tombol lebih lega */
+    margin: 20px 10px; /* Memberi jarak agar tidak kepojokan */
 }
 
 .option-item {
@@ -111,7 +111,7 @@ h1 {
     position: relative;
 }
 
-/* Sembunyikan bulatan radio asli agar tampilan bersih tapi tetap fungsional */
+/* Sembunyikan radio button asli */
 .option-input {
     position: absolute;
     opacity: 0;
@@ -121,69 +121,40 @@ h1 {
     z-index: 2;
 }
 
-/* Styling Label sebagai Card Utama */
+/* Label sebagai Card dengan efek 3D Shadow */
 .option-item label {
     display: block;
-    padding: 16px 20px;
+    padding: 18px 25px;
     background-color: #ffffff;
-    border: 2px solid #e0e6ff;
+    border: 1px solid #e0e6ff;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     font-weight: 500;
     color: #2c3e50;
     text-align: center;
+    /* Efek 3D Shadow Halus */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     position: relative;
     z-index: 1;
 }
 
+/* Efek Hover (Saat kursor di atas tombol) */
 .option-item label:hover {
     background-color: #f8faff;
     border-color: #4b6cb7;
+    transform: translateY(-2px); /* Tombol sedikit naik saat dihover */
+    box-shadow: 0 6px 12px rgba(75, 108, 183, 0.1);
 }
 
-/* EFEK KLIK: Saat dipilih, kotak berubah jadi Biru dan Teks jadi Putih */
+/* EFEK KLIK (WARNA BIRU PROFESIONAL) */
+/* Saat radio button dicek, label langsung berubah warna biru */
 .option-input:checked + label {
-    background-color: #4b6cb7 !important;
+    background: linear-gradient(135deg, #4b6cb7 0%, #3a56a4 100%) !important;
     color: #ffffff !important;
     border-color: #182848 !important;
-    box-shadow: 0 4px 12px rgba(75, 108, 183, 0.3);
-}
-
-/* Button Navigation - Tetap di bawah */
-.buttons-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 20px 30px 30px;
-    border-top: 1px solid #eee;
-    gap: 10px;
-}
-
-.btn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    justify-content: center;
-}
-
-.btn-prev { background-color: #f0f4ff; color: #4b6cb7; }
-.btn-next { background-color: #4b6cb7; color: white; }
-.btn-submit { background-color: #27ae60; color: white; display: none; }
-
-.btn:hover:not(:disabled) {
-    transform: translateY(-2px);
-    filter: brightness(1.1);
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    box-shadow: 0 4px 15px rgba(75, 108, 183, 0.4); /* Shadow lebih kuat saat terpilih */
+    transform: translateY(1px); /* Efek tombol tertekan */
 }
 
 /* Thank You Page */
@@ -261,4 +232,5 @@ h1 {
     font-weight: 700;
     display: block;
 }
+
 
