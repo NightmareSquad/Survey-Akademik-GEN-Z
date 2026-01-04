@@ -3,7 +3,7 @@
 // ============================================
 
 /*
- * FINAL FIX – STABLE & ANTI STUCK
+ * FINAL FIX – STABLE, ANTI STUCK, ANTI LOADING
  * Revisi: 4 Januari 2026
  * Status: PRODUKSI
  */
@@ -16,7 +16,7 @@ const APP_SCRIPT_URL =
 const DEBUG_MODE = true;
 
 // Versi
-const APP_VERSION = '4.3';
+const APP_VERSION = '4.4';
 
 // ================= DATA SURVEY =================
 const SURVEY_DATA = {
@@ -87,7 +87,7 @@ function prepareSubmissionData(rawData) {
   };
 }
 
-// ================= SUBMIT (FINAL STABLE) =================
+// ================= SUBMIT (PRODUCTION SAFE) =================
 function submitSurveyData(surveyData) {
   return new Promise((resolve) => {
     if (!checkOnlineStatus()) {
@@ -107,32 +107,44 @@ function submitSurveyData(surveyData) {
       console.log('📤 Payload dikirim:', payload);
     }
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000); // ⏱ 8 detik HARD STOP
+
     const formData = new FormData();
     formData.append('data', JSON.stringify(payload));
 
-    // 🔥 FIRE & FORGET (PALING AMAN)
     fetch(APP_SCRIPT_URL, {
       method: 'POST',
-      body: formData
-    }).finally(() => {
-      // 💾 Backup lokal
-      try {
-        const history = JSON.parse(
-          localStorage.getItem(STORAGE_KEYS.SURVEY_HISTORY) || '[]'
-        );
-        history.push({ payload, time: new Date().toISOString() });
-        localStorage.setItem(
-          STORAGE_KEYS.SURVEY_HISTORY,
-          JSON.stringify(history)
-        );
-      } catch (e) {}
+      body: formData,
+      signal: controller.signal
+    })
+      .then(() => {
+        if (DEBUG_MODE) console.log('✅ Fetch selesai');
+      })
+      .catch(err => {
+        if (DEBUG_MODE) console.warn('⚠️ Fetch error:', err.message);
+      })
+      .finally(() => {
+        clearTimeout(timeout);
 
-      // ✅ PASTI RESOLVE → LOADING BERHENTI
-      resolve({ success: true });
-    });
+        // 💾 Backup lokal (SELALU)
+        try {
+          const history = JSON.parse(
+            localStorage.getItem(STORAGE_KEYS.SURVEY_HISTORY) || '[]'
+          );
+          history.push({ payload, time: new Date().toISOString() });
+          localStorage.setItem(
+            STORAGE_KEYS.SURVEY_HISTORY,
+            JSON.stringify(history)
+          );
+        } catch (e) {}
+
+        // 🔚 UI JANGAN PERNAH NUNGGU
+        resolve({ success: true });
+      });
   });
 }
 
 // ================= INIT =================
-console.log('✅ config.js FINAL STABLE loaded', APP_VERSION);
+console.log('✅ config.js FINAL PRODUCTION loaded', APP_VERSION);
 localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_VERSION);
