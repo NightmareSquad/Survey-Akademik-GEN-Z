@@ -9,7 +9,7 @@
  */
 
 // URL Web App Google Apps Script - DEPLOY V5
-const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFcRxElhht4HPwBvPzjykLW7MejVQHKeYYAbxCAt85R3BAXY56-O7XBnG_1Or6pvyl/exec';
+const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxzHch3vYam_UwlRqhOWHLQV3UdXBVWGZlHJ0mks3l2BMEpUQtu0GNmVaTHCxyfh35Z/exec';
 
 // Mode debug
 const DEBUG_MODE = true;
@@ -128,3 +128,4 @@ async function submitSurveyData(surveyData) {
 // ================= INIT =================
 console.log('✅ config.js FINAL loaded', APP_VERSION);
 localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_VERSION);
+
