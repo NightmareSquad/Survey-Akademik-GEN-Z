@@ -3,24 +3,25 @@
 // ============================================
 
 /*
- * FINAL FIX – ANTI CORS
+ * FINAL FIX – STABLE & ANTI STUCK
  * Revisi: 4 Januari 2026
- * Status: PRODUKSI - STABIL
+ * Status: PRODUKSI
  */
 
-// URL Web App Google Apps Script (DEPLOY TERBARU)
-const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFury01AsD9V6h2xf1B2Hgo4ZJ2DFn9Md2GJMloURzRaeYwrJ7nuylBnnRcM2SBjQ/exec';
+// URL Web App Google Apps Script
+const APP_SCRIPT_URL =
+  'https://script.google.com/macros/s/AKfycbyFury01AsD9V6h2xf1B2Hgo4ZJ2DFn9Md2GJMloURzRaeYwrJ7nuylBnnRcM2SBjQ/exec';
 
 // Debug
 const DEBUG_MODE = true;
 
 // Versi
-const APP_VERSION = '4.2';
+const APP_VERSION = '4.3';
 
 // ================= DATA SURVEY =================
 const SURVEY_DATA = {
-  title: "Peran Pola Asuh Orang Tua dalam Memprediksi Motivasi Belajar Mahasiswa Gen Z Semester Awal",
-  estimatedTime: "3–5 menit",
+  title: 'Peran Pola Asuh Orang Tua dalam Memprediksi Motivasi Belajar Mahasiswa Gen Z Semester Awal',
+  estimatedTime: '3–5 menit',
   totalQuestions: 10
 };
 
@@ -86,45 +87,52 @@ function prepareSubmissionData(rawData) {
   };
 }
 
-// ================= SUBMIT (ANTI CORS - FINAL) =================
-async function submitSurveyData(surveyData) {
-  if (!checkOnlineStatus()) {
-    alert('Tidak ada koneksi internet');
-    return;
-  }
+// ================= SUBMIT (FINAL STABLE) =================
+function submitSurveyData(surveyData) {
+  return new Promise((resolve) => {
+    if (!checkOnlineStatus()) {
+      resolve({ success: false, message: 'Offline' });
+      return;
+    }
 
-  const validation = validateSurveyData(surveyData);
-  if (!validation.valid) {
-    alert(validation.error);
-    return;
-  }
+    const validation = validateSurveyData(surveyData);
+    if (!validation.valid) {
+      resolve(validation);
+      return;
+    }
 
-  const payload = prepareSubmissionData(surveyData);
+    const payload = prepareSubmissionData(surveyData);
 
-  if (DEBUG_MODE) {
-    console.log('📤 Payload dikirim:', payload);
-  }
+    if (DEBUG_MODE) {
+      console.log('📤 Payload dikirim:', payload);
+    }
 
-  // 🔥 KIRIM PAKAI FormData (PALING STABIL)
-  const formData = new FormData();
-  formData.append('data', JSON.stringify(payload));
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(payload));
 
-  // ⛔ JANGAN await, JANGAN headers
-  fetch(APP_SCRIPT_URL, {
-    method: 'POST',
-    body: formData
+    // 🔥 FIRE & FORGET (PALING AMAN)
+    fetch(APP_SCRIPT_URL, {
+      method: 'POST',
+      body: formData
+    }).finally(() => {
+      // 💾 Backup lokal
+      try {
+        const history = JSON.parse(
+          localStorage.getItem(STORAGE_KEYS.SURVEY_HISTORY) || '[]'
+        );
+        history.push({ payload, time: new Date().toISOString() });
+        localStorage.setItem(
+          STORAGE_KEYS.SURVEY_HISTORY,
+          JSON.stringify(history)
+        );
+      } catch (e) {}
+
+      // ✅ PASTI RESOLVE → LOADING BERHENTI
+      resolve({ success: true });
+    });
   });
-
-  // Backup lokal
-  try {
-    const history = JSON.parse(localStorage.getItem(STORAGE_KEYS.SURVEY_HISTORY) || '[]');
-    history.push({ payload, time: new Date().toISOString() });
-    localStorage.setItem(STORAGE_KEYS.SURVEY_HISTORY, JSON.stringify(history));
-  } catch (e) {}
-
-  return { success: true };
 }
 
 // ================= INIT =================
-console.log('✅ config.js FINAL FIX loaded', APP_VERSION);
+console.log('✅ config.js FINAL STABLE loaded', APP_VERSION);
 localStorage.setItem(STORAGE_KEYS.APP_VERSION, APP_VERSION);
