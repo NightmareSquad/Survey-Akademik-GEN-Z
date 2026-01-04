@@ -105,28 +105,26 @@ function goToNextQuestion() {
 }
 
 // ================= UI =================
-function updateUI() {
-    updateProgressBar();
-    updateNavigationButtons();
-}
-
-function updateProgressBar() {
-    const percent = ((currentQuestion + 1) / answers.length) * 100;
-    document.getElementById('progressFill').style.width = percent + '%';
-}
-
 function updateNavigationButtons() {
     const prev = document.getElementById('prevBtn');
     const next = document.getElementById('nextBtn');
     const submit = document.getElementById('submitBtn');
 
+    // Tombol "Sebelumnya" mati kalau di pertanyaan pertama
     prev.disabled = currentQuestion === 0;
+    
+    // Tombol "Selanjutnya" mati kalau pertanyaan sekarang belum dijawab
     next.disabled = answers[currentQuestion] === 0;
 
-    if (currentQuestion === answers.length - 1 && answers.every(v => v !== 0)) {
-        next.style.display = 'none';
-        submit.style.display = 'flex';
+    // CEK: Jika sudah di pertanyaan terakhir (indeks 9)
+    if (currentQuestion === answers.length - 1) {
+        next.style.display = 'none';      // Sembunyikan tombol "Selanjutnya"
+        submit.style.display = 'flex';    // PAKSA munculkan tombol "Kirim"
+        
+        // Tombol Kirim hanya bisa diklik kalau pertanyaan ke-10 sudah dijawab
+        submit.disabled = answers[currentQuestion] === 0; 
     } else {
+        // Jika belum di pertanyaan terakhir
         next.style.display = 'flex';
         submit.style.display = 'none';
     }
@@ -168,3 +166,4 @@ function showThankYouPage() {
     document.querySelector('.buttons-container').style.display = 'none';
     document.getElementById('thankYouContainer').style.display = 'block';
 }
+
