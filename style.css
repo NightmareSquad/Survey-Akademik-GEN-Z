@@ -171,3 +171,37 @@ h1 {
 .option-item {
     position: relative;
 }
+
+/* ================= RESTORE ANIMASI OPSI ================= */
+
+/* Kondisi normal */
+.option-label {
+    background-color: #f8f9ff;
+    border: 2px solid #e0e6ff;
+    transition: 
+        background-color 0.25s ease,
+        color 0.25s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Hover hidup lagi */
+.option-label:hover {
+    background-color: #edf1ff;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(75, 108, 183, 0.15);
+}
+
+/* 🔥 SAAT DIKLIK (INTI MASALAHNYA DI SINI) */
+.option-input:checked + .option-label {
+    background-color: #4b6cb7 !important;
+    color: #ffffff !important;
+    border-color: #4b6cb7 !important;
+    transform: scale(1.03);
+    box-shadow: 0 8px 18px rgba(75, 108, 183, 0.35);
+}
+
+/* Animasi tekan */
+.option-label:active {
+    transform: scale(0.98);
+}
