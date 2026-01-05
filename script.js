@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // ================= BUILD SURVEY =================
 function buildSurvey() {
     const questions = [
-        "Orang tua saya memberikan dukungan penuh dalam kegiatan akademik saya.",
-        "Orang tua saya memberikan kebebasan memilih jurusan.",
-        "Orang tua saya menanyakan perkembangan belajar.",
-        "Orang tua memberi penghargaan atas prestasi.",
-        "Orang tua membatasi pergaulan.",
+        "Dalam lingkungan keluarga, nilai-nilai spiritual dan etika ditekankan sebagai fondasi utama dalam meraih kesuksesan akademik.",
+        "Orang tua secara konsisten memberikan afirmasi positif terhadap progres pencapaian kompetensi saya, khususnya pada bidang karakter dan keagamaan.",
+        "Orang tua saya memberikan kebebasan bagi saya untuk menentukan cara belajar yang paling nyaman.",
+        "Orang tua saya menetapkan aturan yang jelas mengenai ibadah harian saya meskipun saya sudah kuliah.",
+        "Orang tua secara konsisten memberikan afirmasi positif terhadap progres pencapaian kompetensi saya, khususnya pada bidang karakter dan keagamaan.",
         "Orang tua menetapkan target akademik.",
         "Orang tua membandingkan saya dengan orang lain.",
         "Orang tua memberi motivasi saat kesulitan.",
@@ -175,3 +175,4 @@ function showThankYouPage() {
     document.querySelector('.buttons-container').style.display = 'none';
     thankYouContainer.style.display = 'block';
 }
+
